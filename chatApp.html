@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Chat App</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+	.msgbbl{
+		background-color: #ddd;
+		padding: 5px 10px;
+		border-radius: 10px;
+		color: #555;
+		margin-bottom: 5px;
+	}
+
+	div.stickyyy{
+	position: fixed;
+    left: calc(50% + 298px);
+    top: 80px;
+    bottom: 20px;
+    width: 310px;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-flow: column wrap;
+    overflow: hidden;
+    z-index: 100;
+	}
+
+</style>
+
+
+</head>
+<body>
+	<br>
+	<div class="container-fluid">
+		<div class="well text-center">
+			<h3>My Chat App</h3>
+		</div>
+	</div>
+<hr>
+<div>
+		<div class="col-sm-8" style="padding-left: 30px; padding-top: 30px">
+			<div id="nomsg">
+				<h4 style="color: #ccc;">No Messages Yet!</h4>
+				<div class="msg-wrapper"></div>
+			</div>
+		</div>
+		<div class="container stickyyy" style="position: -webkit-sticky; position: sticky;">
+			<form style="float: right">
+				<h5>Type your message below!</h5>
+				<br>
+
+			  <div class="form-group">
+			    <label for="exampleInputEmail1">Username</label>
+			    <input type="text" class="username form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+			    
+			  </div>
+
+			  <div class="form-group">
+			    <label for="exampleInputPassword1">Message</label>
+			    <input type="text" class="message form-control" id="exampleInputPassword1">
+			  </div>
+			  
+			  <button type="submit" class="btn btn-success">Send</button>
+
+
+
+			</form>
+		</div>
+
+</div>
+
+</body>
+<footer>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+
+
+<script>
+	var socket = io.connect('http://localhost:5000/')
+
+	socket.on('connect', function(){
+		socket.emit('my event',{
+			data: 'User connected'
+		})
+	})
+
+	var form = $('form').on('submit', function(e){
+		e.preventDefault()
+		var user_name = $('input.username').val()
+		var message = $('input.message').val()
+		socket.emit('my event',{
+			user: user_name,
+			msg: message
+		})
+		$('input.message').val('').focus()
+	})
+
+	socket.on('my response', function(mssg){
+		if( typeof mssg.user !== 'undefined'){
+			$('h4').remove()
+			$('div.msg-wrapper').append('<div class="msgbbl"><b>'+ mssg.user +' </b>'+ mssg.msg +'</div>')
+		}
+		console.log(mssg)
+	})
+</script>
+
+
+</footer>
+</html>
